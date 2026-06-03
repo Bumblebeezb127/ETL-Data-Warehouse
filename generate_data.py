@@ -5,6 +5,7 @@
 
 import random
 import mysql.connector
+from mysql.connector import Error
 from datetime import datetime, timedelta
 import logging
 
@@ -16,7 +17,7 @@ DB_CONFIG = {
     'host': 'localhost',
     'port': 3306,
     'user': 'root',
-    'password': 'your_password',  # 请根据实际情况修改
+    'password': 'dflc72131',  # 请根据实际情况修改
     'database': 'source_db'
 }
 
@@ -92,9 +93,11 @@ def generate_dirty_price():
 
 def generate_dirty_date():
     """
-    生成日期，包含无效日期格式（脏数据）
+    生成日期，包含无效日期（脏数据）
+    注意：只生成逻辑上无效的日期，格式必须是有效的MySQL日期格式
+    逻辑无效类型：未来日期、空值
     """
-    dirty_type = random.choice(['valid', 'invalid_format', 'future', 'null'])
+    dirty_type = random.choice(['valid', 'future', 'null'])
 
     # 随机日期（在过去一年内）
     days_ago = random.randint(0, 365)
@@ -103,19 +106,8 @@ def generate_dirty_date():
     if dirty_type == 'valid':
         return date.strftime('%Y-%m-%d %H:%M:%S')
 
-    elif dirty_type == 'invalid_format':
-        # 多种无效格式
-        formats = [
-            date.strftime('%Y/%m/%d %H:%M:%S'),
-            date.strftime('%Y%m%d'),
-            date.strftime('%Y%m%d%H%M%S'),
-            date.strftime('%d-%m-%Y %H:%M:%S'),
-            date.strftime('%d/%m/%Y'),
-        ]
-        return random.choice(formats)
-
     elif dirty_type == 'future':
-        # 未来日期
+        # 未来日期（逻辑上无效）
         future_date = datetime.now() + timedelta(days=random.randint(1, 365))
         return future_date.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -129,10 +121,10 @@ def generate_data(cursor):
 
     # 清空现有数据
     cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
-    cursor.execute("TRUNCATE TABLE logs")
-    cursor.execute("TRUNCATE TABLE orders")
-    cursor.execute("TRUNCATE TABLE products")
-    cursor.execute("TRUNCATE TABLE users")
+    cursor.execute("DELETE FROM logs")
+    cursor.execute("DELETE FROM orders")
+    cursor.execute("DELETE FROM products")
+    cursor.execute("DELETE FROM users")
     cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
     logger.info("已清空现有数据")
 

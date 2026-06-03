@@ -11,7 +11,7 @@ DB_CONFIG = {
     'host': 'localhost',
     'port': 3306,
     'user': 'root',
-    'password': 'your_password'  # 请根据实际情况修改
+    'password': 'dflc72131'  # 请根据实际情况修改
 }
 
 SOURCE_DB = 'source_db'
