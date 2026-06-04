@@ -20,6 +20,7 @@ pip install -r requirements.txt
 - `generate_data.py`
 - `etl_job.py`
 - `olap_queries.py`
+- `olap_charts.py`
 
 ```python
 DB_CONFIG = {
@@ -44,6 +45,9 @@ python etl_job.py
 
 # 运行OLAP查询
 python olap_queries.py
+
+# 生成可视化图表
+python olap_charts.py
 ```
 
 ---
@@ -56,6 +60,7 @@ python olap_queries.py
 | `generate_data.py` | 生成1000+条测试数据，包含故意设置的脏数据 |
 | `etl_job.py` | ETL核心：抽取源数据 → 清洗转换 → 加载到数据仓库 |
 | `olap_queries.py` | 10条OLAP多维分析查询，验证ETL效果 |
+| `olap_charts.py` | 生成销售趋势可视化图表 |
 
 ---
 
@@ -75,3 +80,11 @@ python olap_queries.py
     ├── fact_orders    (订单事实)
     └── fact_logs      (日志事实)
 ```
+
+---
+
+## 输出文件
+
+| 文件 | 说明 |
+|------|------|
+| `olap_charts.png` | OLAP可视化图表 |
