@@ -9,6 +9,7 @@ import re
 from datetime import datetime
 import time
 import logging
+from config import DB_CONFIG, SOURCE_DB, DW_DB
 
 # 配置日志
 logging.basicConfig(
@@ -16,18 +17,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# 数据库配置
-DB_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': 'your_password'  # 请根据实际情况修改
-}
-
-# 源数据库和目标数据库名称
-SOURCE_DB = 'source_db'
-DW_DB = 'dw_db'
 
 
 class ETLPipeline:

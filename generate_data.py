@@ -8,18 +8,12 @@ import mysql.connector
 from mysql.connector import Error
 from datetime import datetime, timedelta
 import logging
+from config import DB_CONFIG, SOURCE_DB
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# 数据库配置
-DB_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': 'dflc72131',  # 请根据实际情况修改
-    'database': 'source_db'
-}
+DB_CONFIG['database'] = SOURCE_DB
 
 # 数据配置
 CATEGORIES = ['手机', '电脑', '书籍', '服装', '食品', '家具', '玩具', '平板']

@@ -5,17 +5,7 @@
 
 import mysql.connector
 from mysql.connector import Error
-
-# 数据库配置
-DB_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': '123456'  # 请根据实际情况修改
-}
-
-SOURCE_DB = 'source_db'
-DW_DB = 'dw_db'
+from config import DB_CONFIG, SOURCE_DB, DW_DB
 
 
 def create_databases():

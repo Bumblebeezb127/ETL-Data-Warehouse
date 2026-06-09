@@ -6,19 +6,16 @@ import mysql.connector
 from mysql.connector import Error
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('Agg')  # 非交互式后端
+matplotlib.use('Agg')
+from matplotlib.font_manager import FontProperties
+from config import DB_CONFIG, DW_DB
+import os
+
+DB_CONFIG['database'] = DW_DB
 
 # 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'Arial Unicode MS']
+plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial']
 plt.rcParams['axes.unicode_minus'] = False
-
-DB_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': 'your_password'  # 修改为你的密码
-}
-DW_DB = 'dw_db'
 
 
 def get_yearly_sales(cursor):
@@ -80,7 +77,7 @@ def plot_charts():
 
         # 创建图表
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-        fig.suptitle('电商销售数据 OLAP 可视化分析', fontsize=16)
+        fig.suptitle('电商销售数据OLAP分析', fontsize=18, fontweight='bold', y=1.02)
 
         # 1. 年度销售趋势
         yearly = get_yearly_sales(cursor)
@@ -88,9 +85,9 @@ def plot_charts():
             years = [str(r[0]) for r in yearly]
             revenues = [r[1] for r in yearly]
             axes[0, 0].bar(years, revenues, color='steelblue')
-            axes[0, 0].set_title('年度销售额趋势')
-            axes[0, 0].set_xlabel('年份')
-            axes[0, 0].set_ylabel('销售额')
+            axes[0, 0].set_title('年度销售额趋势', fontsize=14, fontweight='bold')
+            axes[0, 0].set_xlabel('年份', fontsize=12)
+            axes[0, 0].set_ylabel('销售额', fontsize=12)
             for i, v in enumerate(revenues):
                 axes[0, 0].text(i, v, f'{v:.0f}', ha='center')
 
@@ -100,9 +97,9 @@ def plot_charts():
             months = [f'{r[0]}月' for r in monthly]
             revenues = [r[1] for r in monthly]
             axes[0, 1].plot(months, revenues, marker='o', linewidth=2, color='coral')
-            axes[0, 1].set_title('2026年月度销售额趋势')
-            axes[0, 1].set_xlabel('月份')
-            axes[0, 1].set_ylabel('销售额')
+            axes[0, 1].set_title('2026年月度销售额趋势', fontsize=14, fontweight='bold')
+            axes[0, 1].set_xlabel('月份', fontsize=12)
+            axes[0, 1].set_ylabel('销售额', fontsize=12)
             axes[0, 1].grid(True, linestyle='--', alpha=0.7)
 
         # 3. 分类销售占比
@@ -112,30 +109,32 @@ def plot_charts():
             revenues = [r[1] for r in category]
             colors = plt.cm.Set3(range(len(categories)))
             axes[1, 0].pie(revenues, labels=categories, autopct='%1.1f%%', colors=colors)
-            axes[1, 0].set_title('商品分类销售占比')
+            axes[1, 0].set_title('商品分类销售占比', fontsize=14, fontweight='bold')
 
         # 4. 订单状态分布
         status = get_order_status(cursor)
         if status:
-            statuses = [r[0] for r in status]
+            # 状态中文映射
+            status_map = {'pending': '待支付', 'paid': '已支付', 'shipped': '已发货', 'completed': '已完成', 'cancelled': '已取消'}
+            statuses = [status_map.get(r[0], r[0]) for r in status]
             counts = [r[1] for r in status]
-            colors = ['#66b3ff', '#99ff99', '#ffcc99', '#ff9999']
+            colors = ['#66b3ff', '#99ff99', '#ffcc99', '#ff9999', '#cccccc']
             axes[1, 1].bar(statuses, counts, color=colors[:len(statuses)])
-            axes[1, 1].set_title('订单状态分布')
-            axes[1, 1].set_xlabel('状态')
-            axes[1, 1].set_ylabel('订单数')
+            axes[1, 1].set_title('订单状态分布', fontsize=14, fontweight='bold')
+            axes[1, 1].set_xlabel('状态', fontsize=12)
+            axes[1, 1].set_ylabel('数量', fontsize=12)
             for i, v in enumerate(counts):
                 axes[1, 1].text(i, v, str(v), ha='center')
 
         plt.tight_layout()
-        plt.savefig('olap_charts.png', dpi=150, bbox_inches='tight')
-        print('图表已保存至 olap_charts.png')
+        plt.savefig('output/olap_charts.png', dpi=150, bbox_inches='tight')
+        print('Charts saved to output/olap_charts.png')
 
         cursor.close()
         conn.close()
 
     except Error as e:
-        print(f'数据库错误: {e}')
+        print(f'Database error: {e}')
 
 
 if __name__ == '__main__':

@@ -5,17 +5,9 @@ OLAP分析查询 - 验证ETL效果
 
 import mysql.connector
 from mysql.connector import Error
+from config import DB_CONFIG, DW_DB
 
-# 数据库配置
-DB_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'root',
-    'password': 'your_password',  # 请根据实际情况修改
-    'database': 'dw_db'
-}
-
-DW_DB = 'dw_db'
+DB_CONFIG['database'] = DW_DB
 
 
 def execute_query(cursor, query_name, query):
