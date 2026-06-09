@@ -15,12 +15,7 @@ pip install -r requirements.txt
 
 ### 2. 配置数据库
 
-修改以下脚本中的数据库密码：
-- `init_database.py`
-- `generate_data.py`
-- `etl_job.py`
-- `olap_queries.py`
-- `olap_charts.py`
+修改 `config.py` 中的数据库密码：
 
 ```python
 DB_CONFIG = {
@@ -33,6 +28,13 @@ DB_CONFIG = {
 
 ### 3. 运行
 
+**方式一：一键运行（推荐）**
+```bash
+# 双击 run_all.bat 或在终端运行
+.\run_all.bat
+```
+
+**方式二：分步运行**
 ```bash
 # 初始化数据库
 python init_database.py
@@ -56,11 +58,14 @@ python olap_charts.py
 
 | 模块 | 说明 |
 |------|------|
+| `config.py` | 数据库配置（统一管理） |
 | `init_database.py` | 初始化MySQL数据库，创建source_db和dw_db及所有表结构 |
 | `generate_data.py` | 生成1000+条测试数据，包含故意设置的脏数据 |
 | `etl_job.py` | ETL核心：抽取源数据 → 清洗转换 → 加载到数据仓库 |
 | `olap_queries.py` | 10条OLAP多维分析查询，验证ETL效果 |
 | `olap_charts.py` | 生成销售趋势可视化图表 |
+| `run_all.bat` | 一键运行所有脚本 |
+| `doc/draw_diagrams.py` | 绘制系统架构图和数据流图 |
 
 ---
 
@@ -87,4 +92,6 @@ python olap_charts.py
 
 | 文件 | 说明 |
 |------|------|
-| `olap_charts.png` | OLAP可视化图表 |
+| `output/olap_charts.png` | OLAP可视化图表 |
+| `doc/architecture.png` | 系统架构图 |
+| `doc/dataflow.png` | 数据流图 |
