@@ -1,0 +1,122 @@
+答辩快速定位索引
+================================================================================
+
+一、文件速查
+================================================================================
+
+config.py                  数据库配置（用户名、密码、数据库名）
+init_database.py           数据库初始化（创建数据库和表结构）
+generate_data.py           测试数据生成（含脏数据）
+etl_job.py                 ETL核心（抽取/清洗/转换/加载）
+olap_queries.py            OLAP分析查询（10条SQL）
+olap_charts.py             数据可视化（4张图表）
+draw_diagrams.py           架构图/数据流图绘制
+run_all.bat                一键运行脚本
+
+
+================================================================================
+
+二、功能定位
+================================================================================
+
+【数据库配置】
+config.py:6-14           数据库连接配置、数据库名称
+
+【初始化 - 创建数据库】
+init_database.py:11-32   创建source_db和dw_db
+
+【初始化 - 源数据库表】
+init_database.py:36-50   users用户表
+init_database.py:52-66   products商品表
+init_database.py:68-85   orders订单表
+init_database.py:87-101  logs日志表
+
+【初始化 - 数据仓库表】
+init_database.py:105-128    dim_user用户维度表
+init_database.py:130-153     dim_product商品维度表
+init_database.py:155-183     dim_date日期维度表
+init_database.py:185-213     fact_orders订单事实表
+
+【数据生成 - 脏数据生成】
+generate_data.py:35-65      generate_dirty_phone() 错误手机号
+generate_data.py:66-87      generate_dirty_price() 错误价格
+generate_data.py:88-111     generate_dirty_date() 错误日期
+generate_data.py:112-136    generate_users() 生成用户
+generate_data.py:138-162    generate_products() 生成商品
+generate_data.py:164-200    generate_orders() 生成订单
+
+【ETL - 连接】
+etl_job.py:35-44           connect_source()连接源数据库
+etl_job.py:45-54           connect_dw()连接数据仓库
+
+【ETL - 清洗规则】
+etl_job.py:67-77           validate_phone()手机号校验
+etl_job.py:79-86           clean_price()价格校验
+etl_job.py:88-116          normalize_date()日期标准化
+
+【ETL - 转换规则】
+etl_job.py:118-145         normalize_category()分类映射
+etl_job.py:147-163         extract_date_dimensions()日期维度拆解
+etl_job.py:165-174         calculate_total()金额计算
+
+【ETL - 主流程】
+etl_job.py:176-205         run_etl()ETL主入口
+etl_job.py:207-256         extract()数据抽取
+etl_job.py:258-298         transform()转换处理
+etl_job.py:414-443         load()数据加载
+
+【ETL - 加载策略】
+etl_job.py:445-488         _load_dim_users()用户维度表(SCD Type 2)
+etl_job.py:490-532         _load_dim_products()商品维度表(SCD Type 2)
+etl_job.py:534-577         _load_dim_date()日期维度表
+etl_job.py:579-658         _load_fact_orders()订单事实表(UPSERT)
+
+【OLAP查询】
+olap_queries.py:50-63      年度销售额统计
+olap_queries.py:65-80       月度销售额趋势
+olap_queries.py:82-97       季度销售额统计
+olap_queries.py:99-114      商品分类销售
+olap_queries.py:116-131     热销商品排行
+olap_queries.py:133-148     高价值用户排行
+olap_queries.py:167-182     订单状态分布
+olap_queries.py:184-199     用户商品交叉分析
+
+【可视化】
+olap_charts.py:21-32       get_yearly_sales()年度数据
+olap_charts.py:34-46       get_monthly_sales()月度数据
+olap_charts.py:48-59       get_category_sales()分类数据
+olap_charts.py:72-139      plot_charts()绘制图表
+
+【架构图】
+draw_diagrams.py:17-110    draw_architecture_diagram()架构图
+draw_diagrams.py:113-230   draw_dataflow_diagram()数据流图
+
+
+================================================================================
+
+三、一句话说明
+================================================================================
+
+Q: ETL在哪？
+A: etl_job.py，整个ETL流程176-205行
+
+Q: 清洗规则在哪？
+A: etl_job.py的validate_phone(67行)、clean_price(79行)、normalize_date(88行)
+
+Q: 转换规则在哪？
+A: etl_job.py的normalize_category(118行)、extract_date_dimensions(147行)
+
+Q: SCD Type 2在哪？
+A: etl_job.py的_load_dim_users(445-488行)
+
+Q: UPSERT在哪？
+A: etl_job.py的_load_fact_orders(579-658行)
+
+Q: 星型模型在哪？
+A: init_database.py的create_dw_tables(103-215行)
+
+Q: 脏数据怎么生成的？
+A: generate_data.py的generate_dirty_phone/price/date(35-111行)
+
+Q: OLAP查询有哪些？
+A: olap_queries.py的run_olap_queries(46-213行)，共10条查询

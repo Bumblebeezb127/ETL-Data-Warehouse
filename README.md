@@ -6,7 +6,7 @@
 
 ```bash
 # 创建conda环境
-conda create -n .conda python=3.10
+conda create -p "./.conda" python=3.10
 conda activate ./.conda
 
 # 安装依赖
